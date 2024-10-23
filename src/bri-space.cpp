@@ -8,6 +8,9 @@ using namespace bri;
 
 bool nplcp = false;
 
+uint64_t LF_call_count = 0;
+uint64_t elapsed_LF = 0;
+
 void help(){
 	cout << "bri-space: breakdown of index space usage" << endl;
 	cout << "Usage:       bri-space [options] <index>" << endl;

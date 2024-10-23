@@ -12,6 +12,9 @@
 #include "permuted_lcp.hpp"
 #include "utils.hpp"
 
+extern uint64_t LF_call_count;
+extern uint64_t elapsed_LF;
+
 namespace bri {
 
 // sample maintained during the search
@@ -353,6 +356,13 @@ public:
     range_t LF(range_t rn, uchar c)
     {
 
+        // bool is_no_terminator = c != TERMINATOR;
+        bool is_no_terminator = true;
+
+        // Start timing with rdtscp
+        unsigned int start_aux;
+        uint64_t start = __builtin_ia32_rdtscp(&start_aux);
+
         if ((c == 255 && F[c] == bwt.size()) || F[c] >= F[c+1]) return {1,0};
 
         ulint c_before = bwt.rank(rn.first, c);
@@ -363,7 +373,24 @@ public:
 
         ulint lb = F[c] + c_before;
 
-        return {lb, lb + c_inside - 1};
+        range_t res = {lb, lb + c_inside - 1};
+
+        // End timing with rdtscp
+        unsigned int end_aux;
+        uint64_t end = __builtin_ia32_rdtscp(&end_aux);
+
+        // Check if the core has switched
+        if (start_aux != end_aux) {
+            std::cerr << "Core switch detected in LF after "
+                      << LF_call_count << " calls" << std::endl;
+
+        } else {
+
+            elapsed_LF += (end - start) * is_no_terminator;
+            LF_call_count += is_no_terminator;
+        }
+
+        return res;
     
     }
 
@@ -375,6 +402,13 @@ public:
     range_t LFR(range_t rn, uchar c)
     {
 
+        // bool is_no_terminator = c != TERMINATOR;
+        bool is_no_terminator = true;
+
+        // Start timing with rdtscp
+        unsigned int start_aux;
+        uint64_t start = __builtin_ia32_rdtscp(&start_aux);
+
         if ((c == 255 && F[c] == bwt.size()) || F[c] >= F[c+1]) return {1,0};
 
         ulint c_before = bwtR.rank(rn.first, c);
@@ -385,7 +419,24 @@ public:
 
         ulint lb = F[c] + c_before;
 
-        return {lb, lb + c_inside - 1};
+        range_t res = {lb, lb + c_inside - 1};
+
+        // End timing with rdtscp
+        unsigned int end_aux;
+        uint64_t end = __builtin_ia32_rdtscp(&end_aux);
+
+        // Check if the core has switched
+        if (start_aux != end_aux) {
+            std::cerr << "Core switch detected in LFR after "
+                      << LF_call_count << " calls" << std::endl;
+
+        } else {
+
+            elapsed_LF += (end - start) * is_no_terminator;
+            LF_call_count += is_no_terminator;
+        }
+
+        return res;
 
     }
 
@@ -856,7 +907,7 @@ public:
 
         if (allowed_mis == 0)
         {
-            br_sample sample(backward_search(pattern,0,m-1,init_sample));
+            br_sample sample(forward_search(pattern,0,m-1,init_sample));
             if (sample.is_invalid()) return res;
             res[sample.range] = sample;
             return res;

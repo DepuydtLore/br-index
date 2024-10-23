@@ -15,6 +15,9 @@ bool nplcp = false;
 size_t left_len = 0;
 size_t core_len = 0;
 
+uint64_t LF_call_count = 0;
+uint64_t elapsed_LF = 0;
+
 void help()
 {
 	cout << "bri-seedex: locate all occurrences of the input patterns" << endl;

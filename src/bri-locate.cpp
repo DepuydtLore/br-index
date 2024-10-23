@@ -14,6 +14,9 @@ string check = string();
 long allowed = 0;
 bool nplcp = false;
 
+uint64_t LF_call_count = 0;
+uint64_t elapsed_LF = 0;
+
 struct ReadRecord {
     string id;
     string read;
@@ -332,6 +335,9 @@ void locate_all(ifstream& in, string patterns)
     cout << "Total time     : " << tot_time << " microseconds" << endl;
 	cout << "Search time    : " << (double)tot_time/n*2 << " microseconds/pattern (total: " << n/2 << " patterns)" << endl;
 	cout << "Search time    : " << (double)tot_time/occ_tot << " microseconds/occurrence (total: " << occ_tot << " occurrences)" << endl;
+    
+    cout << "Number of LF queries: " << LF_call_count << endl;
+    cout << "Average number of CPU cycles per LF query: " << elapsed_LF*1.0 / LF_call_count << endl;
 }
 
 

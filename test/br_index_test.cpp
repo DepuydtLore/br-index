@@ -8,6 +8,9 @@
 
 using namespace bri;
 
+uint64_t LF_call_count = 0;
+uint64_t elapsed_LF = 0;
+
 template<class T>
 void print_vec(std::vector<T>& vec)
 {

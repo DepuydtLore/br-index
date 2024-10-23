@@ -11,6 +11,10 @@ using namespace std;
 
 long allowed = 0;
 bool nplcp = false;
+
+uint64_t LF_call_count = 0;
+uint64_t elapsed_LF = 0;
+
 struct ReadRecord {
     string id;
     string read;
@@ -264,6 +268,9 @@ void count_all(ifstream& in, string patterns)
     cout << "Total time : " << search << " milliseconds" << endl;
 	cout << "Search time: " << (double)search/n*2 << " milliseconds/pattern (total: " << n/2 << " patterns)" << endl;
 	cout << "Search time: " << (double)search/occ_tot << " milliseconds/occurrence (total: " << occ_tot << " occurrences)" << endl;
+    
+    cout << "Number of LF queries: " << LF_call_count << endl;
+    cout << "Average number of CPU cycles per LF query: " << elapsed_LF*1.0 / LF_call_count << endl;
 }
 
 

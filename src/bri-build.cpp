@@ -14,6 +14,9 @@ string input_file = string();
 bool sais = true;
 bool nplcp = false;
 
+uint64_t LF_call_count = 0;
+uint64_t elapsed_LF = 0;
+
 void help(){
 	cout << "bri-build: builds the bidirectional r-index. Extension .bri/.brin is automatically added to output index file" << endl << endl;
 	cout << "Usage: bri-build [options] <input_file_name>" << endl;
